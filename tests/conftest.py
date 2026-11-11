@@ -30,3 +30,12 @@ def client():
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def device(client):
+    """A ready-made device (with its device type) for tests that need one."""
+    device_type = client.post("/device-types", json={"name": "Relay-A"}).json()
+    return client.post(
+        "/devices", json={"name": "relay-001", "device_type_id": device_type["id"]}
+    ).json()
