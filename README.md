@@ -6,7 +6,7 @@ A REST API that stores devices and their configurations. The domain is fictional
 
 ## Status
 
-Work in progress. Implemented: device types and devices (create, list, get).
+Work in progress. Implemented: device types, devices, versioned configurations and a diff between two versions.
 
 ## Tech stack
 
@@ -29,6 +29,10 @@ The API starts on http://localhost:8000, interactive docs are at http://localhos
 | GET | `/device-types/{id}` | Get one device type |
 | POST, GET | `/devices` | Create / list devices |
 | GET | `/devices/{id}` | Get one device |
+| POST, GET | `/devices/{id}/configs` | Save a new configuration version / list versions |
+| GET | `/devices/{id}/configs/latest` | Get the latest version |
+| GET | `/devices/{id}/configs/{version}` | Get one version |
+| GET | `/devices/{id}/configs/diff?from_version=1&to_version=2` | What was added, removed or changed between two versions |
 
 ## Tests
 
@@ -37,13 +41,13 @@ pip install -r requirements-dev.txt
 pytest -q
 ```
 
-Tests use FastAPI's test client with an in-memory SQLite database.
+Tests use FastAPI's test client with an in-memory SQLite database. The diff logic is a pure function (`app/diff.py`) with its own unit tests.
 
 ## Roadmap
 
 - [x] Device types and devices, migrations, Docker, CI
-- [ ] Versioned configurations per device
-- [ ] Diff between two configuration versions
+- [x] Versioned configurations per device
+- [x] Diff between two configuration versions
 - [ ] Validation of parameters against rules of the device type
 - [ ] Tests against PostgreSQL in CI
 - [ ] Deployment on AWS EC2 with HTTPS

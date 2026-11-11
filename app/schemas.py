@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -25,3 +26,32 @@ class DeviceOut(DeviceCreate):
 
     id: int
     created_at: datetime
+
+
+class ConfigurationCreate(BaseModel):
+    parameters: dict[str, Any] = Field(min_length=1)
+    comment: str | None = None
+
+
+class ConfigurationOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    device_id: int
+    version: int
+    parameters: dict[str, Any]
+    comment: str | None
+    created_at: datetime
+
+
+class ChangedValue(BaseModel):
+    old: Any
+    new: Any
+
+
+class ConfigDiff(BaseModel):
+    from_version: int
+    to_version: int
+    added: dict[str, Any]
+    removed: dict[str, Any]
+    changed: dict[str, ChangedValue]
